@@ -3,7 +3,6 @@ const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const app = require("../app");
-const { string } = require("pg-format");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -59,16 +58,22 @@ describe("get api/reviews/:review_id", () => {
         );
       });
   });
-  test(":( path status 400 when passing invalid review_id", () => {});
+  test(":( path status 400 when passing invalid review_id", () => {
+    const review_id = "invalid";
+    return request(app)
+      .get(`/api/reviews/${review_id}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid review id");
+      });
+  });
+  test(":( path status 400 when passing valid but does't exist review_id", () => {
+    const review_id = 999;
+    return request(app)
+      .get(`/api/reviews/${review_id}`)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid review id");
+      });
+  });
 });
-
-// owner which is the username from the users table
-// title
-// review_id
-// review_body
-// designer
-// review_img_url
-// category
-// created_at
-// votes
-// comment_count which is the total count of all the comments with this review_id - you should make use of queries to the database in order to achieve this
