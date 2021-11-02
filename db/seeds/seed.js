@@ -12,7 +12,7 @@ const seed = (data) => {
     .then(() => {
       return db.query(
         `CREATE TABLE categories 
-          (slug VARCHAR UNIQUE, 
+          (slug VARCHAR PRIMARY KEY UNIQUE, 
             description TEXT);`
       );
     })
@@ -32,7 +32,7 @@ const seed = (data) => {
             designer VARCHAR,
             review_img_url VARCHAR DEFAULT 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
             votes FLOAT DEFAULT 0,
-            categories VARCHAR REFERENCES categories(slug), 
+            category VARCHAR REFERENCES categories(slug), 
             owner VARCHAR REFERENCES users(username),
             created_at TIMESTAMPTZ DEFAULT Now());`
       );
@@ -65,13 +65,13 @@ const seed = (data) => {
     .then(() => {
       const str = format(
         `INSERT INTO reviews
-        ( title, designer, review_img_url, votes, categories, owner, created_at) VALUES %L`,
+        ( title, designer, review_img_url, votes, category, owner, created_at) VALUES %L`,
         reviewData.map((review) => [
           review.title,
           review.designer,
           review.review_img_url,
           review.votes,
-          review.categories,
+          review.category,
           review.owner,
           review.created_at,
         ])
