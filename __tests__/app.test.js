@@ -53,7 +53,7 @@ describe("get api/reviews/:review_id", () => {
             category: expect.any(String),
             owner: expect.any(String),
             created_at: expect.any(String),
-            comment_count: expect.any(Number),
+            comment_count: expect.any(String),
           })
         );
       });
@@ -156,14 +156,30 @@ describe("get api/reviews", () => {
         );
       });
   });
-  test("", () => {});
+  test("status 200 when passing right query and respond with correct report review_id ", () => {
+    const sort_by = "review_id";
+    const order = "ASC";
+    return request(app)
+      .get(`/api/reviews?sort_by=${sort_by}&&order=${order}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.respond).toBeSortedBy(`${sort_by}`);
+      });
+  });
+  test("status 200 when passing right query and respond with correct report votes", () => {
+    const sort_by = "votes";
+    const order = "DESC";
+    return request(app)
+      .get(`/api/reviews?sort_by=${sort_by}&&order=${order}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.respond).toBeSortedBy(`${sort_by}`, {
+          descending: true,
+        });
+      });
+  });
 });
 
-// GET /api/reviews
-// Responds with:
-
-// an reviews array of review objects, each of which should have the following properties:
-//  which is the total count of all the comments with this review_id - you should make use of queries to the database in order to achieve this
 // Should accept queries:
 
 // sort_by, which sorts the reviews by any valid column (defaults to date)

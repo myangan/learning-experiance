@@ -7,4 +7,5 @@ const {
 
 reviewsRouter.route("/:review_id").get(getReviews).patch(updateVotes);
 reviewsRouter.route("/").get(getAllReviews);
+
 module.exports = reviewsRouter;

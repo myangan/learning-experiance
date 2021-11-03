@@ -1,39 +1,31 @@
 const db = require("../db/connection.js");
 
 exports.getReview = (query) => {
-  let queryString = "SELECT * FROM reviews";
-  const queryParams = [];
-
   if (!+query) return Promise.reject({ status: 400, msg: "Invalid review id" });
 
-  if (query === undefined)
-    return db.query(queryString).then(({ rows }) => rows);
-  else {
-    return db.query(queryString).then(({ rows }) => {
-      let newArr = rows.filter((x) => x.review_id === +query);
-      if (newArr.length === 0) {
-        return Promise.reject({ status: 404, msg: "Invalid review id" });
-      } else {
-        queryString += " WHERE review_id = $1";
-        queryParams.push(query);
-        return db.query(queryString, queryParams).then((respond) => {
-          let newResponse = { ...respond.rows[0] };
-          return db
-            .query(
-              `SELECT * FROM comments WHERE review_id = ${newResponse.review_id};`
-            )
-            .then(({ rows }) => {
-              newResponse.comment_count = rows.length;
-              return newResponse;
-            });
-        });
-      }
-    });
+  if (query === undefined) {
+    return db.query("SELECT * FROM reviews").then(({ rows }) => rows);
+  } else {
+    return db
+      .query(
+        `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count
+      FROM reviews
+      LEFT JOIN comments 
+      ON reviews.review_id = comments.review_id
+      WHERE reviews.review_id = ($1)
+      GROUP BY reviews.review_id;`,
+        [query]
+      )
+      .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ status: 404, msg: "Invalid review id" });
+        }
+        return rows[0];
+      });
   }
 };
 
 exports.updateVote = (upVote, review_id) => {
-  console.log(upVote);
   if (Object.keys(upVote).length > 1) {
     return Promise.reject({ status: 401, msg: "Too Many information" });
   }
@@ -49,16 +41,18 @@ exports.updateVote = (upVote, review_id) => {
   }
 };
 
-exports.getAllReview = () => {
+exports.getAllReview = (sort_by = "created_at", order = "DESC") => {
   return db
     .query(
       `SELECT 
-      reviews.review_id, title, reviews.votes, category, owner, 
-      COUNT(comments.review_id) AS comment_count
+      reviews.*, COUNT(comments.review_id) AS comment_count
       FROM reviews 
       LEFT JOIN comments 
       ON reviews.review_id = comments.review_id 
-      GROUP BY reviews.review_id;`
+      GROUP BY reviews.review_id
+      ORDER BY ${sort_by} ${order};`
     )
-    .then(({ rows }) => rows);
+    .then(({ rows }) => {
+      return rows;
+    });
 };

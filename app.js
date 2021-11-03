@@ -10,7 +10,7 @@ app.all("/*", (req, res, next) => {
 });
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
-    console.log(err, "custom build error");
+    //console.log(err, "custom build error");
     res.status(err.status).send({ msg: err.msg });
   } else next(err);
 });
