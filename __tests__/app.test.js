@@ -67,7 +67,7 @@ describe("get api/reviews/:review_id", () => {
         expect(body.msg).toBe("Invalid review id");
       });
   });
-  test(":( path status 400 when passing valid but does't exist review_id", () => {
+  test(":( path status 404 when passing valid but does't exist review_id", () => {
     const review_id = 999;
     return request(app)
       .get(`/api/reviews/${review_id}`)
@@ -77,3 +77,95 @@ describe("get api/reviews/:review_id", () => {
       });
   });
 });
+
+describe("patch api/review/:review_id", () => {
+  test("status 201 when passing valid object and update +1", () => {
+    const input = { inc_votes: 1 };
+    const review_id = 1;
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.respond.votes).toEqual(input.inc_votes + 1);
+      });
+  });
+  test("status 201 when passing valid object and update -100", () => {
+    const input = { inc_votes: -100 };
+    const review_id = 1;
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.respond.votes).toEqual(input.inc_votes + 1);
+      });
+  });
+  test("status 400 when passing invalid object like {}", () => {
+    const input = {};
+    const review_id = 1;
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+  test('status 400 when passing invalid object like { inc_votes: "likeThis" }', () => {
+    const input = { inc_votes: "likeThis" };
+    const review_id = 1;
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+  test("status 401 when passing invalid object like {{ inc_votes : 1, name: 'Mitch' }", () => {
+    const input = { inc_votes: 1, name: "Mitch" };
+    const review_id = 1;
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(input)
+      .expect(401)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Too Many information");
+      });
+  });
+});
+
+describe("get api/reviews", () => {
+  test("status 200 respond with owner, title,review_id,category,review_img_url,created_at,votes,comment_count", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        body.respond.forEach((element) =>
+          expect(element).toEqual(
+            expect.objectContaining({
+              review_id: expect.any(Number),
+              title: expect.any(String),
+              votes: expect.any(Number),
+              category: expect.any(String),
+              owner: expect.any(String),
+              comment_count: expect.any(String),
+            })
+          )
+        );
+      });
+  });
+  test("", () => {});
+});
+
+// GET /api/reviews
+// Responds with:
+
+// an reviews array of review objects, each of which should have the following properties:
+//  which is the total count of all the comments with this review_id - you should make use of queries to the database in order to achieve this
+// Should accept queries:
+
+// sort_by, which sorts the reviews by any valid column (defaults to date)
+// order, which can be set to asc or desc for ascending or descending (defaults to descending)
+// category, which filters the reviews by the category value specified in the query

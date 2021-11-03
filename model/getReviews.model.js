@@ -1,6 +1,6 @@
 const db = require("../db/connection.js");
 
-exports.getReview = async (query) => {
+exports.getReview = (query) => {
   let queryString = "SELECT * FROM reviews";
   const queryParams = [];
 
@@ -30,4 +30,35 @@ exports.getReview = async (query) => {
       }
     });
   }
+};
+
+exports.updateVote = (upVote, review_id) => {
+  console.log(upVote);
+  if (Object.keys(upVote).length > 1) {
+    return Promise.reject({ status: 401, msg: "Too Many information" });
+  }
+  if (!upVote.inc_votes || typeof upVote.inc_votes !== "number") {
+    return Promise.reject({ status: 400, msg: "Invalid input" });
+  } else {
+    return db
+      .query(
+        `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING*;`,
+        [upVote.inc_votes, review_id]
+      )
+      .then(({ rows }) => rows[0]);
+  }
+};
+
+exports.getAllReview = () => {
+  return db
+    .query(
+      `SELECT 
+      reviews.review_id, title, reviews.votes, category, owner, 
+      COUNT(comments.review_id) AS comment_count
+      FROM reviews 
+      LEFT JOIN comments 
+      ON reviews.review_id = comments.review_id 
+      GROUP BY reviews.review_id;`
+    )
+    .then(({ rows }) => rows);
 };
