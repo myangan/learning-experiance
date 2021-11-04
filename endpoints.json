@@ -4,7 +4,6 @@
   },
   "GET /api/categories": {
     "description": "serves an array of all categories",
-    "queries": [],
     "exampleResponse": {
       "categories": [
         {
@@ -15,7 +14,7 @@
     }
   },
   "GET /api/reviews": {
-    "description": "serves an array of all reviews",
+    "description": "serves an array of all reviews, sort_by default value is time, order default value is DESC",
     "queries": ["category", "sort_by", "order"],
     "exampleResponse": {
       "reviews": [
@@ -26,9 +25,88 @@
           "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
           "category": "hidden-roles",
           "created_at": 1610964101251,
-          "votes": 5
+          "votes": 5,
+          "review_id": 2
         }
       ]
+    }
+  },
+  "GET /api/reviews/:reviews_id": {
+    "description": "serves an array of review filtered by review_id from reviews",
+    "exampleResponse": {
+      "review": [
+        {
+          "title": "One Night Ultimate Werewolf",
+          "designer": "Akihisa Okui",
+          "owner": "happyamy2016",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+          "category": "hidden-roles",
+          "created_at": 1610964101251,
+          "votes": 5,
+          "review_id": 2,
+          "review_body": "Fiddly fun for all the family",
+          "comment_count": 5
+        }
+      ]
+    }
+  },
+  "PATCH /api/reviews/:reviews_id": {
+    "description": "serves an array of updated reviews, update votes",
+    "request.body": { "inc_votes": 1 },
+    "exampleResponse": {
+      "reviews": [
+        {
+          "title": "One Night Ultimate Werewolf",
+          "designer": "Akihisa Okui",
+          "owner": "happyamy2016",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+          "category": "hidden-roles",
+          "created_at": 1610964101251,
+          "votes": 6,
+          "review_id": 2,
+          "review_body": "Fiddly fun for all the family",
+          "comment_count": 5
+        }
+      ]
+    }
+  },
+  "GET /api/reviews/:review_id/comments": {
+    "description": "an array of comments for the given review_id ",
+    "exampleResponse": {
+      "reviews": [
+        {
+          "body": "I loved this game too!",
+          "votes": 16,
+          "author": "bainesface",
+          "comment_id": 2,
+          "created_at": "new Date(1511354613389)"
+        }
+      ]
+    }
+  },
+  "POST /api/reviews/:review_id/comments": {
+    "description": "insert new comment into comments by review_id",
+    "request.body": {
+      "username": "bainesface",
+      "body": "I loved this game too!"
+    },
+    "exampleResponse": {
+      "reviews": [
+        {
+          "created_at": "new Date(1511354613389)",
+          "review_id": 4,
+          "votes": 0,
+          "author": "bainesface",
+          "body": "I loved this game too!"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the comment from comments by comment_id",
+    "params": [3],
+    "exampleResponse": {
+      "msg": "deleted"
     }
   }
 }
