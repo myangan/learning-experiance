@@ -317,9 +317,11 @@ describe("/api/reviews/:review_id/comments", () => {
 
 describe("DELETE /api/comments/:comment_id", () => {
   test("delete the given comment by comment_id,Responds with:status 204 and no content ", () => {
-    return request(app)
-      .delete("/api/comments/2")
-      .send({ message: "deleted" })
-      .expect(200, { message: "deleted" });
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+});
+describe("get /api ", () => {
+  test("JSON describing all the available endpoints on your API ", () => {
+    return request(app).get("/api").expect(200);
   });
 });
