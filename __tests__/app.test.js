@@ -156,7 +156,18 @@ describe("get api/reviews", () => {
         );
       });
   });
-  test("status 200 when passing right query and respond with correct report review_id ", () => {
+  test("status 200 when passing right query and respond with correct report review_id with order default", () => {
+    const sort_by = "review_id";
+    return request(app)
+      .get(`/api/reviews?sort_by=${sort_by}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.respond).toBeSortedBy(`${sort_by}`, {
+          descending: true,
+        });
+      });
+  });
+  test("status 200 when passing right query and respond with correct report review_id order ASC", () => {
     const sort_by = "review_id";
     const order = "ASC";
     return request(app)
@@ -166,7 +177,7 @@ describe("get api/reviews", () => {
         expect(body.respond).toBeSortedBy(`${sort_by}`);
       });
   });
-  test("status 200 when passing right query and respond with correct report votes", () => {
+  test("status 200 when passing right query and respond with correct report votes with order DESC", () => {
     const sort_by = "votes";
     const order = "DESC";
     return request(app)
@@ -178,10 +189,48 @@ describe("get api/reviews", () => {
         });
       });
   });
+  test("status 200 when passing right query and respond with correct report votes with order DESC and category", () => {
+    const sort_by = "votes";
+    const order = "DESC";
+    const category = "euro game";
+    return request(app)
+      .get(
+        `/api/reviews?sort_by=${sort_by}&&order=${order}&&category=${category}`
+      )
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.respond.length).toBe(1);
+        expect(body.respond).toBeSortedBy(`${sort_by}`, {
+          descending: true,
+        });
+      });
+  });
+
+  test(":( path status 400 when passing invalid sort_by", () => {
+    const sort_by = "invalid";
+    return request(app)
+      .get(`/api/reviews?sort_by=${sort_by}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query");
+      });
+  });
+  test(":( path status 400 when passing invalid order", () => {
+    const order = "invalid";
+    return request(app)
+      .get(`/api/reviews?order=${order}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query");
+      });
+  });
+  test(":( path status 400 when passing invalid category", () => {
+    const category = "invalid";
+    return request(app)
+      .get(`/api/reviews?category=${category}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid categories");
+      });
+  });
 });
-
-// Should accept queries:
-
-// sort_by, which sorts the reviews by any valid column (defaults to date)
-// order, which can be set to asc or desc for ascending or descending (defaults to descending)
-// category, which filters the reviews by the category value specified in the query

@@ -24,9 +24,10 @@ exports.updateVotes = (req, res, next) => {
 };
 
 exports.getAllReviews = (req, res, next) => {
-  const { sort_by, order } = req.query;
-
-  getAllReview(sort_by, order).then((respond) => {
-    res.status(200).send({ respond });
-  });
+  const { sort_by, order, category } = req.query;
+  getAllReview(sort_by, order, category)
+    .then((respond) => {
+      res.status(200).send({ respond });
+    })
+    .catch(next);
 };

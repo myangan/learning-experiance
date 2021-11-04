@@ -41,18 +41,33 @@ exports.updateVote = (upVote, review_id) => {
   }
 };
 
-exports.getAllReview = (sort_by = "created_at", order = "DESC") => {
-  return db
-    .query(
-      `SELECT 
+exports.getAllReview = (sort_by = "created_at", order = "DESC", category) => {
+  if (
+    ![
+      "owner",
+      "title",
+      "review_id",
+      "category",
+      "review_img_url",
+      "created_at",
+      "votes",
+      "comment_count",
+    ].includes(sort_by) ||
+    !["ASC", "DESC"].includes(order)
+  ) {
+    return Promise.reject({ status: 400, msg: "Invalid query" });
+  }
+  let queryString = `SELECT 
       reviews.*, COUNT(comments.review_id) AS comment_count
       FROM reviews 
       LEFT JOIN comments 
-      ON reviews.review_id = comments.review_id 
-      GROUP BY reviews.review_id
-      ORDER BY ${sort_by} ${order};`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+      ON reviews.review_id = comments.review_id`;
+  if (category) queryString += ` WHERE category = $1`;
+  queryString += ` GROUP BY reviews.review_id
+      ORDER BY ${sort_by} ${order};`;
+  return db.query(queryString, category ? [category] : []).then(({ rows }) => {
+    if (rows.length === 0)
+      return Promise.reject({ status: 400, msg: "Invalid categories" });
+    return rows;
+  });
 };
