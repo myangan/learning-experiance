@@ -9,7 +9,8 @@ exports.getComments = (req, res, next) => {
 };
 exports.postComments = (req, res, next) => {
   const comment = req.body;
-  postComment(comment)
+  const review_id = req.params.review_id;
+  postComment(comment, review_id)
     .then((respond) => {
       res.status(201).send(respond);
     })

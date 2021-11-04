@@ -294,14 +294,32 @@ describe("/api/reviews/:review_id/comments", () => {
         });
       });
   });
-  test("post status ");
+  test("post status 201 and respond back with created comment ", () => {
+    const input = { username: "mallionaire", body: "any comment" };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            review_id: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
 });
-// POST /api/reviews/:review_id/comments
-// Request body accepts:
 
-// an object with the following properties:
-// username
-// body
-// Responds with:
-
-// the posted comment
+describe("DELETE /api/comments/:comment_id", () => {
+  test("delete the given comment by comment_id,Responds with:status 204 and no content ", () => {
+    return request(app)
+      .delete("/api/comments/2")
+      .send({ message: "deleted" })
+      .expect(200, { message: "deleted" });
+  });
+});
