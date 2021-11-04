@@ -69,5 +69,7 @@ exports.getAllReview = (sort_by = "created_at", order = "DESC", category) => {
     if (rows.length === 0)
       return Promise.reject({ status: 400, msg: "Invalid categories" });
     return rows;
+    /*category that exists but does not have any reviews associated with it 
+    this need to checked and worked with at the moment just trowing error as invalid category even if this category exist*/
   });
 };

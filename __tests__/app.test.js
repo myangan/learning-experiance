@@ -233,4 +233,75 @@ describe("get api/reviews", () => {
         expect(body.msg).toBe("Invalid categories");
       });
   });
+  test(":( path status 400 when passing invalid sort_by and valid order and category", () => {
+    const sort_by = "invalid";
+    const order = "DESC";
+    const category = "euro game";
+    return request(app)
+      .get(
+        `/api/reviews?sort_by=${sort_by}&&order=${order}&&category=${category}`
+      )
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query");
+      });
+  });
+  test(":( path status 400 when passing invalid order and valid sort_by and category", () => {
+    const sort_by = "review_id";
+    const order = "invalid";
+    const category = "euro game";
+    return request(app)
+      .get(
+        `/api/reviews?sort_by=${sort_by}&&order=${order}&&category=${category}`
+      )
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query");
+      });
+  });
+  test(":( path status 400 when passing invalid category and valid sort_by and order", () => {
+    const sort_by = "review_id";
+    const order = "invalid";
+    const category = "euro game";
+    return request(app)
+      .get(
+        `/api/reviews?sort_by=${sort_by}&&order=${order}&&category=${category}`
+      )
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query");
+      });
+  });
 });
+
+describe("/api/reviews/:review_id/comments", () => {
+  test(" get status 200 respond with array of comments", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.length).toBe(6);
+        body.forEach((category) => {
+          expect(category).toEqual(
+            expect.objectContaining({
+              body: expect.any(String),
+              votes: expect.any(Number),
+              author: expect.any(String),
+              review_id: expect.any(Number),
+              created_at: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test("post status ");
+});
+// POST /api/reviews/:review_id/comments
+// Request body accepts:
+
+// an object with the following properties:
+// username
+// body
+// Responds with:
+
+// the posted comment
