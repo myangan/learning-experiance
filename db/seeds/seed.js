@@ -20,7 +20,7 @@ const seed = (data) => {
       return db.query(
         `CREATE TABLE users 
           (username VARCHAR PRIMARY KEY UNIQUE,  
-            name VARCHAR,
+            name VARCHAR NOT NULL,
             avatar_url VARCHAR);`
       );
     })
@@ -28,13 +28,13 @@ const seed = (data) => {
       return db.query(
         `CREATE TABLE reviews
           (review_id SERIAL PRIMARY KEY, 
-            title VARCHAR,
-            designer VARCHAR,
+            title VARCHAR NOT NULL,
+            designer VARCHAR NOT NULL,
             review_img_url VARCHAR DEFAULT 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
             votes FLOAT DEFAULT 0,
             category VARCHAR REFERENCES categories(slug), 
             owner VARCHAR REFERENCES users(username),
-            created_at TIMESTAMPTZ DEFAULT Now());`
+            created_at TIMESTAMP DEFAULT NOW());`
       );
     })
     .then(() => {
@@ -42,9 +42,9 @@ const seed = (data) => {
         `CREATE TABLE comments
           (comment_id SERIAL PRIMARY KEY,
             author VARCHAR REFERENCES users(username),
-            review_id INT REFERENCES reviews(review_id),
+            review_id INT REFERENCES reviews(review_id) ON DELETE CASCADE,
             votes FLOAT DEFAULT 0,
-            created_at TIMESTAMPTZ DEFAULT Now(),
+            created_at TIMESTAMP DEFAULT NOW(),
             body VARCHAR);`
       );
     })

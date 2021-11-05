@@ -1,6 +1,10 @@
-# PSQL and API excercise "House of Games"
+# PSQL and API excercise "House of Games
 
-### Project summery
+### link to hosted version: https://learning-experiance-games.herokuapp.com/api###
+
+---
+
+Project summery
 
 _learning to building an API for the purpose of accessing application data programmatically using Test Driven Development(TDD). The intention here is to mimick the building of a real world backend service which should provide this information to the front end architecture._
 
@@ -66,5 +70,3 @@ PostgresSQL v14
 ```
 
 ## now should be ready to go
-
-### link to hosted version: https://learning-experiance-games.herokuapp.com/api

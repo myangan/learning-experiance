@@ -18,7 +18,7 @@ exports.patchComment = (id, vote) => {
   return db
     .query(
       `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING*;`,
-      [vote, id]
+      [vote.inc_, id]
     )
     .then(({ rows }) => {
       return rows[0];
