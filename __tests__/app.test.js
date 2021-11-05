@@ -334,8 +334,36 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+
 describe("get /api ", () => {
   test("JSON describing all the available endpoints on your API ", () => {
     return request(app).get("/api").expect(200);
+  });
+});
+
+describe("/api/users ", () => {
+  test("GET /api/users status: 200 and return array of obj usernames", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.usernames.length).toBe(4);
+        body.usernames.forEach((username) => {
+          expect(username).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test("GET /api/users status: 200 and return array of obj usernames", () => {
+    return request(app)
+      .get("/api/users/mallionaire")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.usernames.length).toBe(1);
+        expect(body.usernames[0].username).toEqual("mallionaire");
+      });
   });
 });
