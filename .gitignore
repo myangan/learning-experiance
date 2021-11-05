@@ -1,2 +1,6 @@
 node_modules
 .env.*
+Munkh-checklist.md
+Munkh-feedback.md
+error-handling.md
+hosting.md

@@ -372,3 +372,39 @@ describe("/api/users ", () => {
       });
   });
 });
+
+describe("/api/comments/:comment_id", () => {
+  test("patch /api/comments/:comment_id accepts object key val pair status 201 return update comment", () => {
+    const input = { inc_votes: 1 };
+    const comment_id = 2;
+    return request(app)
+      .patch(`/api/comments/${comment_id}`)
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.updated.votes).toEqual(14);
+      });
+  });
+  test("patch /api/comments/:comment_id accepts object key val pair status 201 return update comment", () => {
+    const input = { inc_votes: -1 };
+    const comment_id = 2;
+    return request(app)
+      .patch(`/api/comments/${comment_id}`)
+      .send(input)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.updated.votes).toEqual(12);
+      });
+  });
+  test("patch /api/comments/:comment_id status 400 when passing invalid object", () => {
+    const input = {};
+    const comment_id = 2;
+    return request(app)
+      .patch(`/api/comments/${comment_id}`)
+      .send(input)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+});
