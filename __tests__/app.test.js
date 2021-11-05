@@ -319,6 +319,14 @@ describe("DELETE /api/comments/:comment_id", () => {
   test("delete the given comment by comment_id,Responds with:status 204 and no content ", () => {
     return request(app).delete("/api/comments/2").expect(204);
   });
+  test("delete the given comment by bad request:status 400 error ", () => {
+    return request(app)
+      .delete("/api/comments/hdgf")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
 });
 describe("get /api ", () => {
   test("JSON describing all the available endpoints on your API ", () => {
