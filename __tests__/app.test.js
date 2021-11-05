@@ -363,7 +363,12 @@ describe("/api/users ", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.usernames.length).toBe(1);
-        expect(body.usernames[0].username).toEqual("mallionaire");
+        expect(body.usernames[0]).toEqual({
+          username: "mallionaire",
+          name: "haz",
+          avatar_url:
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        });
       });
   });
 });

@@ -7,7 +7,7 @@ exports.getUsername = (query) => {
     });
   } else {
     return db
-      .query(`SELECT username FROM users WHERE username= '${query}';`)
+      .query(`SELECT * FROM users WHERE username= '${query}';`)
       .then(({ rows }) => {
         return rows;
       });
