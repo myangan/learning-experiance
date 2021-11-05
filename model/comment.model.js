@@ -10,6 +10,6 @@ exports.deleteComment = (comment_id) => {
       ])
       .then(() => {});
   } else {
-    return Promise.reject({ status: 400, msg: "Invalid input" });
+    return Promise.reject({ status: 400, msg: "Invalid delete request" });
   }
 };

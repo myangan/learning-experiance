@@ -277,10 +277,10 @@ describe("get api/reviews", () => {
 describe("/api/reviews/:review_id/comments", () => {
   test(" get status 200 respond with array of comments", () => {
     return request(app)
-      .get("/api/reviews/1/comments")
+      .get("/api/reviews/2/comments")
       .expect(200)
       .then(({ body }) => {
-        expect(body.length).toBe(6);
+        expect(body.length).toBe(3);
         body.forEach((category) => {
           expect(category).toEqual(
             expect.objectContaining({
@@ -293,6 +293,12 @@ describe("/api/reviews/:review_id/comments", () => {
           );
         });
       });
+  });
+  test(" get status 204 when there correct review id but no comment", () => {
+    return request(app).get("/api/reviews/1/comments").expect(204);
+  });
+  test(" get status 204 when there correct review id but no comment", () => {
+    return request(app).get("/api/reviews/100/comments").expect(204);
   });
   test("post status 201 and respond back with created comment ", () => {
     const input = { username: "mallionaire", body: "any comment" };
@@ -324,7 +330,7 @@ describe("DELETE /api/comments/:comment_id", () => {
       .delete("/api/comments/hdgf")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid input");
+        expect(body.msg).toBe("Invalid delete request");
       });
   });
 });

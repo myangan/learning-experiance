@@ -1,9 +1,11 @@
 const { getComment, postComment } = require("../model/CommentByReviewId.model");
 
 exports.getComments = (req, res, next) => {
-  getComment()
+  getComment(req.params.review_id)
     .then((respond) => {
-      res.status(200).send(respond);
+      if (respond.length === 0) {
+        res.sendStatus(204);
+      } else res.status(200).send(respond);
     })
     .catch(next);
 };

@@ -1,7 +1,18 @@
 const db = require("../db/connection");
 
-exports.getComment = () => {
-  return db.query(`SELECT * FROM comments;`).then(({ rows }) => rows);
+exports.getComment = (review_id) => {
+  return db
+    .query(
+      `SELECT * 
+    FROM comments 
+    LEFT JOIN reviews 
+      ON  comments.review_id = reviews.review_id
+    WHERE reviews.review_id = $1;`,
+      [review_id]
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
 };
 exports.postComment = (comment, review_id) => {
   return db
