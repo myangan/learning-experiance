@@ -12,6 +12,7 @@ exports.getComments = (req, res, next) => {
 exports.postComments = (req, res, next) => {
   const comment = req.body;
   const review_id = req.params.review_id;
+  console.log(comment);
   postComment(comment, review_id)
     .then((respond) => {
       res.status(201).send(respond);

@@ -31,5 +31,8 @@ exports.postComment = (comment, review_id) => {
       VALUES ('${comment.username}', '${comment.body}', '${review_id}') 
       RETURNING *;`
     )
-    .then(({ rows }) => rows[0]);
+    .then(({ rows }) => {
+      console.log(rows);
+      return rows[0];
+    });
 };
