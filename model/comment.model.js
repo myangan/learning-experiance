@@ -18,10 +18,12 @@ exports.patchComment = (id, vote) => {
   return db
     .query(
       `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING*;`,
-      [vote.inc_, id]
+      [vote.inc_votes, id]
     )
     .then(({ rows }) => {
-      return rows[0];
+      if (rows[0].votes === null)
+        return Promise.reject({ status: 400, msg: "Invalid input" });
+      else return rows[0];
     });
 };
 
