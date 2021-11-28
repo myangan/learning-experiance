@@ -3,14 +3,24 @@ const db = require("../db/connection");
 exports.getComment = (review_id) => {
   return db
     .query(
-      `SELECT * 
-    FROM comments 
+      `SELECT 
+      comments.comment_id,
+      comments.body,
+      comments.votes,
+      comments.author,
+      comments.created_at ,
+      reviews.review_id,
+      reviews.title,
+      reviews.designer,
+      reviews.category
+      FROM comments 
     LEFT JOIN reviews 
       ON  comments.review_id = reviews.review_id
     WHERE reviews.review_id = $1;`,
       [review_id]
     )
     .then(({ rows }) => {
+      console.log(rows);
       return rows;
     });
 };
